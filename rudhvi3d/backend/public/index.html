@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#120918">
+    <meta name="description" content="An immersive 360-degree Durga Puja virtual tour with standard, stereoscopic VR and red-cyan anaglyph viewing modes.">
+    <title>Durga Puja 360° Virtual Tour & 3D Anaglyph / VR View</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23FFEA00'>ॐ</text></svg>">
+    <!-- Tailwind CSS -->
+    <script src="vendor/tailwindcss.js"></script>
+    <!-- Three.js for 360 Rendering -->
+    <script src="vendor/three.min.js"></script>
+    <!-- OrbitControls -->
+    <script src="vendor/OrbitControls.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Poppins:wght@300;400;600&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="w-screen h-screen relative select-none bg-black">
+
+    <!-- 3D Canvas Viewport -->
+    <div id="canvas-container" class="w-full h-full absolute inset-0 z-0 cursor-grab active:cursor-grabbing"></div>
+    <canvas id="petal-canvas"></canvas>
+
+    <!-- VR Split Screen Divider Line (Visible only in VR Mode) -->
+    <div id="vr-divider-line" class="vr-divider hidden"></div>
+
+    <!-- Hotspots overlay container -->
+    <div id="hotspots-container" class="absolute inset-0 pointer-events-none z-20"></div>
+    <div id="scene-transition" class="scene-transition" aria-live="polite"><div><i class="fa-solid fa-gopuram"></i><strong id="scene-transition-title">Entering the pandal</strong><span>Loading 360° experience…</span></div></div>
+
+    <!-- Hidden File Input for Direct 360 Image Upload -->
+    <input type="file" id="custom-360-upload" accept="image/*" class="hidden">
+
+    <header id="main-header" class="fixed top-0 left-0 w-full z-40 p-3 sm:p-4 pointer-events-none flex justify-between items-start transition-opacity duration-500 gap-2">
+        <!-- Left Title & Location Info -->
+        <div class="pointer-events-auto glass-panel p-2.5 sm:px-4 sm:py-2.5 rounded-2xl flex items-center gap-3 border-yellow-500/40">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-lg">
+                <i class="fa-solid fa-om"></i>
+            </div>
+            <div>
+                <h2 id="active-pandal-title" class="font-cinzel text-xs sm:text-sm font-bold text-yellow-300 leading-tight">
+                    Salt Lake Grand Palace Sarbojanin
+                </h2>
+                <div class="flex items-center gap-1.5 text-[11px] text-yellow-200/80">
+                    <span class="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span id="active-pandal-sub">Kolkata • 360° Live Virtual Walkthrough</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Action Buttons & 3D Mode Switcher -->
+        <div class="pointer-events-auto flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end">
+            <!-- 3D Render Mode Toggles -->
+            <div class="flex items-center bg-slate-950/80 p-1 rounded-xl border border-yellow-500/40 gap-1">
+                <button id="mode-normal-btn" title="Standard Interactive 360 View" class="glass-btn px-2.5 h-9 rounded-lg text-yellow-300 text-xs font-semibold active-mode flex items-center gap-1">
+                    <i class="fa-solid fa-globe text-amber-400"></i>
+                    <span>360°</span>
+                </button>
+                <button id="mode-vr-btn" title="Stereoscopic Dual View for VR Cardboard Headsets" class="glass-btn px-2.5 h-9 rounded-lg text-yellow-300 text-xs font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-vr-cardboard text-cyan-400"></i>
+                    <span>VR View</span>
+                </button>
+                <button id="mode-anaglyph-btn" title="Anaglyph 3D Glasses Mode (Red/Cyan)" class="glass-btn px-2.5 h-9 rounded-lg text-yellow-300 text-xs font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-glasses text-red-400"></i>
+                    <span>3D Anaglyph</span>
+                </button>
+            </div>
+
+            <button id="little-planet-btn" title="Toggle Little Planet / Top Aerial View Transition" class="glass-panel glass-btn px-3 h-11 rounded-xl text-yellow-300 flex items-center gap-2 text-xs font-semibold">
+                <i class="fa-solid fa-earth-asia text-amber-400 text-sm"></i>
+                <span class="hidden sm:inline">Little Planet</span>
+            </button>
+            <button id="dhaak-btn" title="Play Traditional Dhaak Beats" class="glass-panel glass-btn px-3 h-11 rounded-xl text-yellow-300 flex items-center gap-2 text-xs font-semibold">
+                <i class="fa-solid fa-drum text-amber-400 text-sm"></i>
+                <span class="hidden sm:inline">Dhaak</span>
+            </button>
+            <button id="shankh-btn" title="Blow Shankh (Conch)" class="glass-panel glass-btn px-3 h-11 rounded-xl text-yellow-300 flex items-center gap-2 text-xs font-semibold">
+                <i class="fa-solid fa-bullhorn text-amber-400 text-sm"></i>
+                <span class="hidden sm:inline">Shankh</span>
+            </button>
+            <button id="switch-pandal-btn" title="Switch Theme Pandal" class="glass-panel glass-btn px-3 h-11 rounded-xl text-yellow-300 flex items-center gap-2 text-xs font-semibold">
+                <i class="fa-solid fa-gopuram text-amber-400 text-sm"></i>
+                <span class="hidden sm:inline">Pujas</span>
+            </button>
+            <button id="info-btn" title="Tour Guide" class="glass-panel glass-btn w-11 h-11 rounded-xl text-yellow-300 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-circle-info"></i>
+            </button>
+            <button id="fullscreen-btn" title="Enter Fullscreen" aria-label="Enter fullscreen" class="glass-panel glass-btn w-11 h-11 rounded-xl text-yellow-300 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+            <button id="hide-ui-btn" title="Hide Interface" aria-label="Hide interface" class="glass-panel glass-btn w-11 h-11 rounded-xl text-yellow-300 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="interaction-hint" class="interaction-hint opacity-0" aria-live="polite">
+        <i class="fa-solid fa-hand-pointer"></i>
+        <span>Drag to look around · Scroll to zoom</span>
+        <button id="close-hint" aria-label="Dismiss instructions">×</button>
+    </div>
+    <button id="ui-restore-btn" class="ui-restore" title="Show Interface" aria-label="Show interface"><i class="fa-solid fa-eye"></i></button>
+
+    <!-- Active Mode Indicator Banner (Anaglyph / VR) -->
+    <div id="active-mode-banner" class="fixed top-20 left-1/2 -translate-x-1/2 z-35 hidden transition-all duration-300">
+        <div class="glass-panel border border-cyan-400/60 text-cyan-200 text-xs font-semibold px-4 py-1.5 rounded-full shadow-2xl flex items-center gap-2">
+            <span id="mode-banner-icon">🕶️</span>
+            <span id="mode-banner-text">3D Anaglyph Mode Active — Put on Red/Cyan Glasses</span>
+        </div>
+    </div>
+
+    <!-- Bottom Controls & Interactive Action Icons -->
+    <div id="main-controls" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-none transition-opacity duration-500 opacity-0">
+        <div class="pointer-events-auto glass-panel p-2.5 sm:p-3 rounded-2xl flex items-center justify-center gap-2 shadow-2xl">
+            <!-- Quick Interactive Action Icons -->
+            <div class="flex items-center gap-1.5">
+                <button id="offer-flowers-btn" title="Offer Pushpanjali Flowers" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 to-yellow-400 text-slate-950 flex items-center justify-center font-bold text-base hover:scale-110 active:scale-95 transition shadow-lg shadow-yellow-500/30">
+                    🌺
+                </button>
+                <button id="light-diya-btn" title="Light Ceremonial Diya" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 text-white flex items-center justify-center text-base hover:scale-110 active:scale-95 transition shadow-lg shadow-red-500/30">
+                    🪔
+                </button>
+                <button id="autorotate-btn" title="Toggle 360 Auto Rotation" class="w-10 h-10 rounded-xl glass-panel glass-btn text-yellow-300 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-arrows-spin"></i>
+                </button>
+                <button id="snapshot-btn" title="Take Virtual Selfie / Photo" class="w-10 h-10 rounded-xl glass-panel glass-btn text-yellow-300 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hotspot Info Modal -->
+    <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel border-2 border-yellow-500/50 rounded-2xl max-w-md w-full p-6 relative text-yellow-100 shadow-2xl">
+            <button id="close-info-modal" class="absolute top-4 right-4 text-yellow-400 hover:text-white w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 border border-yellow-500/40 flex items-center justify-center text-yellow-400 text-2xl mb-4" id="modal-icon">
+                <i class="fa-solid fa-gopuram"></i>
+            </div>
+            <h3 id="modal-title" class="text-2xl font-bold font-cinzel text-yellow-300 mb-2">Pandal Art Architecture</h3>
+            <p id="modal-body" class="text-sm text-gray-300 leading-relaxed mb-4">
+                This magnificent structure features handcrafted artwork celebrating traditional Bengali craftsmanship.
+            </p>
+            <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                <span>Did you know? Over 200 skilled artisans spent 4 months crafting this theme exhibit.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Switch Pandal Modal -->
+    <div id="pandal-switch-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel border border-yellow-500/40 rounded-2xl max-w-lg w-full p-6 relative text-yellow-100">
+            <button id="close-pandal-modal" class="absolute top-4 right-4 text-yellow-400 hover:text-white w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold font-cinzel text-yellow-300 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-map-location-dot text-amber-400"></i> Choose Kolkata Puja Pandal (360°)
+            </h3>
+            <div class="grid grid-cols-1 gap-4">
+                <div data-pandal="saltlake" class="pandal-card cursor-pointer glass-panel p-4 rounded-xl border border-yellow-500/40 hover:border-yellow-400 hover:bg-amber-500/20 transition group">
+                    <div class="w-full h-28 rounded-lg bg-gradient-to-tr from-amber-950 to-blue-950 mb-3 flex items-center justify-center text-4xl group-hover:scale-105 transition border border-yellow-500/30">🏛️✨</div>
+                    <h4 class="font-bold text-sm text-yellow-300">Salt Lake Sarbojanin</h4>
+                    <p class="text-xs text-gray-400 mt-1">Grand Marble Palace, Ornate Chandeliers & Blue Dome</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snapshot Virtual Postcard Modal -->
+    <div id="snapshot-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel border-2 border-yellow-500/50 rounded-2xl max-w-lg w-full p-6 relative text-yellow-100 flex flex-col items-center">
+            <button id="close-snapshot-modal" class="absolute top-4 right-4 text-yellow-400 hover:text-white w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-xl font-bold font-cinzel text-yellow-300 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-camera-retro text-amber-400"></i> Puja Virtual Souvenir Frame
+            </h3>
+            
+            <div id="postcard-frame" class="w-full relative border-4 border-amber-500/60 p-3 rounded-xl bg-gradient-to-b from-red-950 to-slate-950 mb-4 shadow-2xl">
+                <img id="snapshot-img" class="w-full h-56 object-cover rounded-lg border border-yellow-500/30" alt="360 View Frame">
+                <div class="mt-3 flex items-center justify-between">
+                    <div>
+                        <div class="font-bangla text-lg text-yellow-300 font-bold">শুভ শারদীয়া দুর্গোৎসব</div>
+                        <div class="text-xs text-amber-200/80">Presented by Rudhvi</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs font-cinzel font-bold text-yellow-400">KOLKATA PUJA 2026</div>
+                        <div class="text-[10px] text-gray-400">#DurgaPuja360</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-3 w-full">
+                <button id="download-postcard-btn" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-bold font-cinzel text-sm shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Save Souvenir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Pandal Pass Lock Modal -->
+    <div id="premium-lock-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-panel border-2 border-yellow-500/50 rounded-2xl max-w-md w-full p-6 relative text-yellow-100 flex flex-col items-center text-center shadow-2xl">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-500 text-slate-950 flex items-center justify-center mb-4 shadow-lg shadow-yellow-500/30 text-2xl">
+                <i class="fa-solid fa-crown text-slate-950"></i>
+            </div>
+            <h3 class="text-2xl font-bold font-cinzel text-yellow-300 mb-2">Locked Premium Pandal</h3>
+            <p id="lock-modal-subtitle" class="text-xs sm:text-sm text-gray-300 leading-relaxed mb-6">
+                This exclusive Durga Puja pandal experience requires a valid <strong class="text-amber-300">Puja3D Pass</strong> to view full 360° and stereoscopic VR modes.
+            </p>
+            <button id="unlock-pass-btn" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-bold font-cinzel text-xs uppercase tracking-wider shadow-lg hover:brightness-110 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-key text-slate-950"></i> Unlock Full Access · Get Pass (₹99)
+            </button>
+            <a href="http://localhost:5173" class="mt-4 text-xs text-amber-200/80 hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-arrow-left"></i> Return to Main Website
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 glass-panel border border-yellow-400/50 text-yellow-200 text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-full shadow-xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2">
+        <i class="fa-solid fa-sparkles text-amber-400" id="toast-icon"></i>
+        <span id="toast-msg">Flowers offered to Maa Durga!</span>
+    </div>
+    <script src="app.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2a0808"/>
+      <stop offset="100%" stop-color="#080203"/>
+    </radialGradient>
+    <linearGradient id="yellowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFF72"/>
+      <stop offset="50%" stop-color="#FFEA00"/>
+      <stop offset="100%" stop-color="#FFC107"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="47" fill="url(#bgGrad)" stroke="url(#yellowGrad)" stroke-width="3"/>
+  <circle cx="50" cy="50" r="42" fill="none" stroke="#FFEA00" stroke-dasharray="2,3" stroke-width="1.2" opacity="0.8"/>
+  <text x="50" y="67" font-family="serif" font-size="56" font-weight="bold" fill="url(#yellowGrad)" text-anchor="middle">ॐ</text>
+</svg>
