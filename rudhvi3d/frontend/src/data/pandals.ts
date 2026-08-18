@@ -1,3 +1,5 @@
+import { VR_VIEWER_URL } from '../config/api';
+
 export interface Pandal {
   id: string;
   name: string;
@@ -33,7 +35,7 @@ export const pandalsData: Pandal[] = [
     isFeatured: true,
     isNew: true,
     displayOrder: 1,
-    vrUrl: 'http://localhost:5000/?pandal=new-town-1',
+    vrUrl: `${VR_VIEWER_URL}/?pandal=new-town-1`,
   },
   {
     id: 'salt-lake-1',
@@ -49,7 +51,7 @@ export const pandalsData: Pandal[] = [
     isFeatured: true,
     isNew: false,
     displayOrder: 2,
-    vrUrl: 'http://localhost:5000/?pandal=salt-lake-1',
+    vrUrl: `${VR_VIEWER_URL}/?pandal=salt-lake-1`,
   },
   {
     id: 'chetla-1',
@@ -65,7 +67,7 @@ export const pandalsData: Pandal[] = [
     isFeatured: false,
     isNew: false,
     displayOrder: 3,
-    vrUrl: 'http://localhost:5000/?pandal=chetla-1',
+    vrUrl: `${VR_VIEWER_URL}/?pandal=chetla-1`,
   },
   {
     id: 'patuli-1',
@@ -81,6 +83,6 @@ export const pandalsData: Pandal[] = [
     isFeatured: false,
     isNew: true,
     displayOrder: 4,
-    vrUrl: 'http://localhost:5000/?pandal=patuli-1',
+    vrUrl: `${VR_VIEWER_URL}/?pandal=patuli-1`,
   },
 ];

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Lock, Eye, EyeOff, ShieldCheck, ArrowLeft, KeyRound, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { FRONTEND_URL } from "../config/api";
+
 interface AdminLoginPageProps {
   onSuccess?: () => void;
   isStandaloneAdmin?: boolean;
@@ -125,7 +127,7 @@ export default function AdminLoginPage({ onSuccess, isStandaloneAdmin = false }:
         <div className="mt-8 pt-6 border-t border-amber-500/20 flex items-center justify-between text-xs text-gray-400">
           {isStandaloneAdmin ? (
             <a
-              href="http://localhost:5173"
+              href={FRONTEND_URL}
               className="hover:text-amber-300 transition flex items-center gap-1 text-amber-200/80"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Return to Website

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Star, Lock, Crown, CheckCircle, Sparkles, X, ShieldCheck, Info } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { pandalsData, Pandal } from "../../data/pandals";
+import { API_BASE_URL, VR_VIEWER_URL } from "../../config/api";
 
 const featureIcons: Record<string, string> = {
   "360° View": "/images/icons/360 degree.png",
@@ -26,7 +27,7 @@ export default function ExplorePandals() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/pandals")
+    fetch(`${API_BASE_URL}/api/pandals`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.pandals) && data.pandals.length > 0) {
@@ -35,13 +36,13 @@ export default function ExplorePandals() {
             name: p.name,
             location: p.location,
             locationTag: p.locationTag || p.location.split(",")[0].toUpperCase(),
-            image: p.image?.startsWith("/uploads") ? `http://localhost:5000${p.image}` : p.image,
+            image: p.image?.startsWith("/uploads") ? `${API_BASE_URL}${p.image}` : p.image,
             features: p.features || ["360° View", "Day & Night", "3D Map"],
             hasVR: true,
             has360: true,
             rating: p.rating || 4.8,
             accessType: p.accessType || "free",
-            vrUrl: `http://localhost:5000/?pandal=${p.id}`,
+            vrUrl: `${VR_VIEWER_URL}/?pandal=${p.id}`,
           }));
           setPandals(mapped);
         }
@@ -96,7 +97,7 @@ export default function ExplorePandals() {
               </button>
             )}
             <a
-              href="http://localhost:5000"
+              href={VR_VIEWER_URL}
               className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 hover:text-red-700 transition-colors"
             >
               View All Pandals <ArrowRight size={16} />

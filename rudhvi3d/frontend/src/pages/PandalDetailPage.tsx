@@ -40,7 +40,7 @@ interface PandalDetail {
   };
 }
 
-const API_BASE_URL = "http://localhost:5000";
+import { API_BASE_URL, VR_VIEWER_URL } from "../config/api";
 
 export default function PandalDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -93,7 +93,7 @@ export default function PandalDetailPage() {
     if (isLocked) {
       setIsPassModalOpen(true);
     } else {
-      window.location.href = `${API_BASE_URL}/?pandal=${pandal?.id}`;
+      window.location.href = `${VR_VIEWER_URL}/?pandal=${pandal?.id}`;
     }
   };
 

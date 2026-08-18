@@ -8,6 +8,7 @@ import {
   heroFeatures,
   heroStats,
 } from "../../data/hero";
+import { VR_VIEWER_URL } from "../../config/api";
 
 export default function HeroSection() {
   const stars = useMemo(
@@ -129,14 +130,14 @@ export default function HeroSection() {
               className="flex flex-wrap gap-3 mb-8"
             >
               <button 
-                onClick={() => window.location.href = 'http://localhost:5000'}
+                onClick={() => window.location.href = VR_VIEWER_URL}
                 className="btn-gold flex items-center gap-2 cursor-pointer"
               >
                 <RectangleGoggles size={16} />
                 {heroContent.ctaPrimary}
               </button>
               <button 
-                onClick={() => window.location.href = 'http://localhost:5000'}
+                onClick={() => window.location.href = VR_VIEWER_URL}
                 className="btn-outline-gold text-white flex items-center gap-2 cursor-pointer"
               >
                 <Play size={16} />
@@ -286,7 +287,7 @@ export default function HeroSection() {
         </div>
 
         <button 
-          onClick={() => window.location.href = 'http://localhost:5000'}
+          onClick={() => window.location.href = VR_VIEWER_URL}
           className="w-full rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 px-4 py-3 text-sm font-bold text-black transition-all hover:shadow-lg hover:shadow-gold-500/30 flex items-center justify-center gap-2 cursor-pointer"
         >
           {heroFeaturedCard.cta}

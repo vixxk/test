@@ -51,7 +51,7 @@ interface PandalItem {
   hasInterior360?: boolean;
 }
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || "http://localhost:5000";
+import { API_BASE_URL, VR_VIEWER_URL } from "../config/api";
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -314,7 +314,7 @@ export default function AdminPage() {
             <Home className="w-4 h-4" /> React App
           </Link>
           <a
-            href={API_BASE_URL}
+            href={VR_VIEWER_URL}
             target="_blank"
             rel="noreferrer"
             className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/5 border border-amber-500/30 text-amber-200 hover:bg-amber-500/20 hover:text-white transition flex items-center gap-2"
@@ -572,7 +572,7 @@ export default function AdminPage() {
 
                   <div className="flex items-center justify-between pt-4 border-t border-amber-500/20 gap-2">
                     <a
-                      href={`${API_BASE_URL}/?pandal=${pandal.id}`}
+                      href={`${VR_VIEWER_URL}/?pandal=${pandal.id}`}
                       target="_blank"
                       rel="noreferrer"
                       className="px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 hover:brightness-110 flex items-center gap-1.5 shadow"
