@@ -401,6 +401,10 @@
 }
 
 /* VR Side-By-Side Preview Overlay */
+.vr-sbs-preview,
+.vr-sbs-preview * {
+  pointer-events: none !important;
+}
 .vr-sbs-preview {
   position: absolute;
   z-index: 12;
@@ -411,7 +415,6 @@
   background: radial-gradient(circle at 50% 48%, #24180f, #050403 70%);
   opacity: 0;
   visibility: hidden;
-  pointer-events: none !important;
   transition: opacity 0.65s ease, visibility 0.65s;
 }
 .vr-sbs-preview.show {
