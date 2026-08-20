@@ -1,0 +1,511 @@
+/* Pannellum & Hero 360 Viewer Styles from netlify-site */
+@import url('https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css');
+
+.pnlm-container {
+  background: #100a04 !important;
+}
+.pnlm-render-container {
+  z-index: 1;
+}
+.pnlm-compass,
+.pnlm-load-box,
+.pnlm-about-msg {
+  display: none !important;
+}
+.pnlm-ui,
+.pnlm-dragfix {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 2 !important;
+  pointer-events: auto !important;
+}
+.pnlm-grab {
+  cursor: grab !important;
+}
+.pnlm-grabbing {
+  cursor: grabbing !important;
+}
+
+/* 360 Player Card Container */
+.camera-drop {
+  position: relative;
+  width: 100%;
+  height: min(62vh, 520px);
+  min-height: 390px;
+  border: 1px solid rgba(240, 210, 126, 0.35);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.65), 0 0 0 8px rgba(255, 255, 255, 0.03);
+  pointer-events: auto !important;
+  cursor: grab;
+  background: #100a04;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.camera-drop:active {
+  cursor: grabbing;
+}
+.camera-drop::after {
+  content: "";
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 46%, transparent 35%, rgba(5, 3, 2, 0.38) 100%),
+              linear-gradient(180deg, rgba(6, 4, 3, 0.26), transparent 25%, transparent 70%, rgba(6, 4, 3, 0.42));
+  opacity: 0.9;
+  transition: opacity 1.5s ease;
+}
+.camera-drop.cinematic-in::before {
+  content: "";
+  position: absolute;
+  z-index: 9;
+  inset: -20%;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 34%, rgba(240, 210, 126, 0.14) 49%, transparent 63%);
+  transform: translateX(-55%);
+  animation: cinematicSweep 3.2s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+.camera-drop.cinematic-settled::after {
+  opacity: 0.48;
+}
+
+@keyframes cinematicSweep {
+  to {
+    transform: translateX(55%);
+    opacity: 0;
+  }
+}
+
+/* View Mode Switcher Overlay (Top Left) */
+.view-mode-switcher {
+  position: absolute;
+  z-index: 18;
+  left: 16px;
+  top: 16px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(14, 9, 6, 0.86), rgba(6, 4, 3, 0.62));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(16px);
+  color: #fff;
+  opacity: 1;
+  width: fit-content;
+  max-width: none;
+  box-sizing: border-box;
+}
+.view-mode-switcher > small {
+  display: block;
+  margin: 0 5px 6px;
+  color: #9f9589;
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+.view-mode-switcher > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.view-mode-switcher button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #a89f94;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.3s;
+}
+.view-mode-switcher button b {
+  font: 700 7px 'Manrope', sans-serif;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+.view-mode-switcher button:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+.view-mode-switcher button.active {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  color: #f3dfac;
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.05);
+}
+.mode-status {
+  display: block;
+  margin: 6px 5px 0;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d8a239;
+  font: normal 700 6px 'Manrope', sans-serif;
+  letter-spacing: 0.16em;
+  text-align: center;
+}
+.mode-360 {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(216, 162, 57, 0.53);
+  border-radius: 50%;
+  font-size: 7px;
+  color: #f0d27e;
+  box-shadow: inset 0 0 10px rgba(216, 162, 57, 0.11);
+  flex-shrink: 0;
+}
+.anaglyph-glasses {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 28px;
+  height: 20px;
+  transform: scale(0.76);
+  transform-origin: center;
+  flex-shrink: 0;
+}
+.anaglyph-glasses::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 7px;
+  width: 4px;
+  height: 1px;
+  background: #d9c9b3;
+}
+.anaglyph-glasses i {
+  position: relative;
+  width: 12px;
+  height: 11px;
+  margin-top: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 3px 3px 5px 5px;
+  box-shadow: inset 0 0 5px currentColor, 0 0 5px currentColor;
+}
+.anaglyph-glasses i:first-child {
+  color: #ef334d;
+  background: rgba(239, 51, 77, 0.23);
+}
+.anaglyph-glasses i:last-child {
+  margin-left: 2px;
+  color: #00c9df;
+  background: rgba(0, 201, 223, 0.22);
+}
+.vr-headset-icon {
+  position: relative;
+  display: inline-block;
+  width: 26px;
+  height: 18px;
+  border: 1px solid #e3d7c2;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  transform: scale(0.76);
+  flex-shrink: 0;
+}
+.vr-headset-icon::before,
+.vr-headset-icon::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  width: 6px;
+  height: 6px;
+  border: 1px solid #66d8e3;
+  border-radius: 50%;
+}
+.vr-headset-icon::before {
+  left: 4px;
+}
+.vr-headset-icon::after {
+  right: 4px;
+}
+
+/* Tour Location Badge Overlay (Extreme Top Right - Floating partially out of box) */
+.tour-location-floating {
+  position: absolute;
+  z-index: 30;
+  right: -6px;
+  top: -10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: linear-gradient(135deg, rgba(24, 16, 10, 0.94), rgba(12, 8, 5, 0.88));
+  backdrop-filter: blur(16px);
+  border-radius: 16px;
+  color: #fff;
+  pointer-events: none;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(240, 210, 126, 0.18);
+}
+.tour-location-floating > span {
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #d8a239;
+  box-shadow: 0 0 0 5px rgba(216, 162, 57, 0.2);
+  flex-shrink: 0;
+}
+.tour-location-floating small {
+  display: block;
+  font-size: 7px;
+  color: #d8a239;
+  letter-spacing: 0.17em;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.tour-location-floating b {
+  display: block;
+  font: 600 16px 'Cormorant Garamond', serif;
+  margin: 1px 0;
+  line-height: 1.1;
+  color: #fdfbf7;
+}
+.tour-location-floating em {
+  display: block;
+  font-size: 9px;
+  color: #b0a699;
+  font-style: normal;
+  margin-top: 2px;
+}
+
+/* Interactive Guide Overlay (Bottom Center of Card) */
+.viewer-guide {
+  position: absolute;
+  z-index: 14;
+  left: 50%;
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 290px;
+  padding: 11px 15px;
+  transform: translate(-50%, 0);
+  border: 1px solid rgba(240, 210, 126, 0.28);
+  border-radius: 15px;
+  background: linear-gradient(135deg, rgba(15, 10, 7, 0.84), rgba(7, 5, 4, 0.68));
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(15px);
+  color: #fff;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.viewer-guide.dismissed {
+  opacity: 0 !important;
+  transform: translate(-50%, 10px) !important;
+  pointer-events: none !important;
+}
+.guide-orbit {
+  position: relative;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(240, 210, 126, 0.38);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #f0d27e;
+  font-size: 9px;
+  font-weight: 700;
+}
+.guide-orbit i {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f0d27e;
+  box-shadow: 0 0 12px #f0d27e;
+  transform: translate(19px, -2px);
+}
+.viewer-guide small {
+  margin-bottom: 2px;
+  color: #d8a239;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.19em;
+  display: block;
+}
+.viewer-guide b {
+  font: 600 15px 'Cormorant Garamond', serif;
+  letter-spacing: 0.01em;
+  display: block;
+}
+.viewer-guide p {
+  margin: 3px 0 0;
+  color: #c9c1b6;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  display: block;
+}
+.mouse-symbol {
+  display: inline-block;
+  width: 9px;
+  height: 13px;
+  border: 1px solid #e4d5b5;
+  border-radius: 6px;
+  vertical-align: -3px;
+  position: relative;
+}
+.mouse-symbol::after {
+  content: "";
+  position: absolute;
+  left: 3px; top: 2px;
+  width: 1px; height: 3px;
+  background: #d8a239;
+}
+.touch-symbol {
+  color: #f0d27e;
+  font-size: 12px;
+  vertical-align: -1px;
+}
+
+/* Tour Controls Badge (Bottom Right of Card) */
+.tour-controls {
+  position: absolute;
+  z-index: 18;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 6px;
+}
+.tour-controls button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(8, 6, 4, 0.82);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  margin: 0;
+  line-height: 0;
+  transition: all 0.3s ease;
+}
+.tour-controls button svg {
+  display: block;
+  margin: auto;
+}
+.tour-controls button:hover {
+  color: #d8a239;
+  border-color: #d8a239;
+}
+
+/* VR Side-By-Side Preview Overlay */
+.vr-sbs-preview {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  display: flex;
+  gap: 5px;
+  padding: 8px;
+  background: radial-gradient(circle at 50% 48%, #24180f, #050403 70%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none !important;
+  transition: opacity 0.65s ease, visibility 0.65s;
+}
+.vr-sbs-preview.show {
+  opacity: 1;
+  visibility: visible;
+}
+.vr-eye-shell {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  background: #080604;
+  box-shadow: inset 0 0 40px #000, 0 10px 30px rgba(0,0,0,0.5);
+  opacity: 1;
+}
+.vr-eye {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.vr-center-bridge {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.22) 18%, rgba(255, 255, 255, 0.22) 82%, transparent);
+}
+.vr-overview-label {
+  position: absolute;
+  z-index: 13;
+  left: 50%;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(102, 216, 227, 0.24);
+  border-radius: 999px;
+  background: rgba(5, 8, 8, 0.68);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  white-space: nowrap;
+}
+.vr-overview-label small {
+  color: #55d2df;
+  font-size: 6px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+.vr-overview-label b {
+  font: 700 7px 'Manrope', sans-serif;
+  letter-spacing: 0.09em;
+}
+
+/* Left Hero Content Dimming Effect */
+.hero-copy-dimmable {
+  transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.hero-copy-dimmable.dimmed {
+  opacity: 0.15 !important;
+  filter: brightness(0.65) contrast(0.95);
+}
+.hero-copy-dimmable.dimmed:hover {
+  opacity: 1.0 !important;
+  filter: none !important;
+}
+
+/* Responsive Overrides */
+@media (max-width: 800px) {
+  .view-mode-switcher {
+    left: 10px;
+    top: 10px;
+    padding: 6px;
+  }
+  .view-mode-switcher > small {
+    display: none;
+  }
+  .view-mode-switcher button {
+    height: 28px;
+    padding: 0 6px;
+  }
+  .view-mode-switcher button b {
+    font-size: 6px;
+  }
+  .tour-location-floating {
+    top: -6px;
+    right: 0px;
+    padding: 8px 12px;
+  }
+}
